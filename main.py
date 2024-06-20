@@ -54,7 +54,7 @@ def save_message_counts():
         writer = csv.writer(file)
         for user_id, count in user_message_counts.items():
             writer.writerow([user_id, count])
-    print("Saved message counts to CSV.")
+    #print("Saved message counts to CSV.")
 
 
 # Function to load slowmode configuration from file
