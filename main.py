@@ -7,11 +7,14 @@ import os
 from dotenv import load_dotenv, dotenv_values
 import asyncio
 from datetime import datetime, timedelta
+import json
 
 # File to store user message counts
 CSV_FILE = 'message_counts.csv'
 ANNOUNCEMENT_FILE = 'announcement.txt'
 EVENT_END_FILE = 'eventend.txt'
+SLOWMODE_CONFIG_FILE = 'slowmode.config'
+
 intents = discord.Intents.all()
 intents.messages = True
 intents.guilds = True
@@ -54,6 +57,25 @@ def save_message_counts():
     print("Saved message counts to CSV.")
 
 
+# Function to load slowmode configuration from file
+def load_slowmode_config():
+    global slowmode_enabled, slowmode_interval
+    if os.path.exists(SLOWMODE_CONFIG_FILE):
+        with open(SLOWMODE_CONFIG_FILE, mode='r') as file:
+            config = json.load(file)
+            slowmode_enabled = config.get("enabled", False)
+            slowmode_interval = config.get("interval", 0)
+    print("Loaded slowmode configuration.")
+
+
+# Function to save slowmode configuration to file
+def save_slowmode_config():
+    with open(SLOWMODE_CONFIG_FILE, mode='w') as file:
+        config = {"enabled": slowmode_enabled, "interval": slowmode_interval}
+        json.dump(config, file)
+    print("Saved slowmode configuration.")
+
+
 # Function to load text from a file
 def load_text_file(file_path):
     if os.path.exists(file_path):
@@ -68,6 +90,7 @@ async def on_ready():
     await bot.tree.sync()  # Sync commands globally or specify a guild
     print(f'Logged in as {bot.user}')
 
+
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -81,7 +104,8 @@ async def on_message(message):
 
         if user_id in user_last_message_time:
             last_message_time = user_last_message_time[user_id]
-            if (current_time - last_message_time).total_seconds() < slowmode_interval:
+            if (current_time -
+                    last_message_time).total_seconds() < slowmode_interval:
                 return
 
         # Update last message time for the user
@@ -95,6 +119,7 @@ async def on_message(message):
 
     save_message_counts()  # Save to CSV whenever a message is sent
     await bot.process_commands(message)
+
 
 @bot.tree.command(name="messagecount",
                   description="Get the message count for a user")
@@ -208,7 +233,9 @@ async def event_start(interaction: discord.Interaction,
     announcement = load_text_file(ANNOUNCEMENT_FILE)
 
     # Send the announcement
-    await interaction.response.send_message(announcement, ephemeral=False)
+    await announcementchannel.send(announcement)
+    await interaction.response.send_message("Event successfully started.",
+                                            ephemeral=True)
 
     # Load the event end message from file
     event_end_message = load_text_file(EVENT_END_FILE)
@@ -335,6 +362,7 @@ async def reset_count(interaction: discord.Interaction,
         await interaction.response.send_message(
             "This user has no recorded message count.", ephemeral=False)
 
+
 @bot.tree.command(
     name="slowmode",
     description="Enable or disable slowmode and set the interval in seconds")
@@ -358,6 +386,7 @@ async def slowmode(interaction: discord.Interaction,
         # Enable or disable slowmode
         slowmode_enabled = enable
         slowmode_interval = interval_seconds
+        save_slowmode_config()
         await interaction.response.send_message(
             f"Slowmode {'enabled' if enable else 'disabled'}. Interval set to {interval_seconds} seconds.",
             ephemeral=True)
@@ -370,7 +399,11 @@ async def slowmode_status(interaction: discord.Interaction):
     status_message = f"Slowmode is {'enabled' if slowmode_enabled else 'disabled'}. Current interval: {slowmode_interval} seconds."
     await interaction.response.send_message(status_message, ephemeral=False)
 
-load_dotenv()
-#TOKEN = os.environ['TOKEN']
-TOKEN = os.getenv("TOKEN")
+
+# Load slowmode configuration at startup
+load_slowmode_config()
+
+#load_dotenv()
+TOKEN = os.environ['TOKEN']
+#TOKEN = os.getenv("TOKEN")
 bot.run(TOKEN)
