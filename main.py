@@ -9,7 +9,7 @@ import asyncio
 from datetime import datetime, timedelta
 import json
 
-# File to store user message counts
+# Initializing files
 CSV_FILE = 'message_counts.csv'
 ANNOUNCEMENT_FILE = 'announcement.txt'
 EVENT_END_FILE = 'eventend.txt'
@@ -32,7 +32,7 @@ slowmode_interval = 0  # in seconds
 # Variables to track event timer
 event_start_time = None
 event_duration = None
-event_end_task = None  # Task to keep track of event end
+event_end_task = None 
 event_channel = None
 
 
@@ -84,6 +84,8 @@ def load_text_file(file_path):
     return "No text found."
 
 
+#Events
+
 @bot.event
 async def on_ready():
     load_message_counts()
@@ -93,8 +95,9 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+     # Ignore messages from bots
     if message.author.bot:
-        return  # Ignore messages from bots
+        return
 
     if message.author == bot.user:
         return
@@ -123,6 +126,8 @@ async def on_message(message):
     save_message_counts()  # Save to CSV whenever a message is sent
     await bot.process_commands(message)
 
+
+#Commands
 
 @bot.tree.command(name="messagecount",
                   description="Get the message count for a user")
@@ -406,6 +411,7 @@ async def slowmode_status(interaction: discord.Interaction):
 # Load slowmode configuration at startup
 load_slowmode_config()
 
+#Load token from .env
 load_dotenv()
 #TOKEN = os.environ['TOKEN']
 TOKEN = os.getenv("TOKEN")
