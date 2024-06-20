@@ -93,6 +93,9 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    if message.author.bot:
+        return  # Ignore messages from bots
+
     if message.author == bot.user:
         return
 
@@ -403,7 +406,7 @@ async def slowmode_status(interaction: discord.Interaction):
 # Load slowmode configuration at startup
 load_slowmode_config()
 
-#load_dotenv()
-TOKEN = os.environ['TOKEN']
-#TOKEN = os.getenv("TOKEN")
+load_dotenv()
+#TOKEN = os.environ['TOKEN']
+TOKEN = os.getenv("TOKEN")
 bot.run(TOKEN)
