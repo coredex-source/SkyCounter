@@ -1,0 +1,5 @@
+asyncio
+py-cord
+chat-exporter
+pytz
+datetime
