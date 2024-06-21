@@ -39,7 +39,7 @@ class MainCog(commands.Cog):
         self.TOKEN = config["token"]
         self.GUILD_ID = config["guild_id"]
         self.CATEGORY_ID1 = config["category_id_1"]
-        self.CATEGORY_ID2 = config["category_id_2"]
+        #self.CATEGORY_ID2 = config["category_id_2"]
 
     # Function to load text from a file
     def load_text_file(self, file_path):

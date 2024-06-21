@@ -195,7 +195,7 @@ class MyView(discord.ui.View):
                     
                     await ticket_channel.set_permissions(guild.default_role, send_messages=False, read_messages=False, view_channel=False) #Set the Permissions for the @everyone role
                     embed = discord.Embed(description=f'Welcome {interaction.user.mention},\n' #Ticket Welcome message
-                                                       'A {PING_ROLE1} will be with you soon',
+                                                       'A '+PING_ROLE1+' will be with you soon',
                                                     color=discord.colour.Color.blue())
                     await ticket_channel.send(embed=embed, view=CloseButton(bot=self.bot))
 
