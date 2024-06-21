@@ -3,11 +3,13 @@
   "guild_id": ,
   "ticket_channel_id": ,
   "category_id_1": ,
-  "category_id_2": ,
   "team_role_id_1": ,
   "team_role_id_2": ,
+  "team_role_id_3": ,
+  "team_role_id_4": ,
   "log_channel_id": ,
+  "ping_role_1": ,
   "timezone": "CET",
   "embed_title": "Support-Tickets",
-  "embed_description": "Here you can open a Support Ticket!"
+  "embed_description": "Check the dropdown bellow to open a ticket :envelope_with_arrow: "
 }
