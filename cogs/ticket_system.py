@@ -13,7 +13,7 @@ with open("config.json", mode="r") as config_file:
     config = json.load(config_file)
 
 GUILD_ID = config["guild_id"]
-TICKET_CHANNEL = config["ticket_channel_id"] 
+TICKET_CHANNEL = config["support_channel_id"] 
 CATEGORY_ID1 = config["category_id_1"]
 TEAM_ROLE1 = config["team_role_id_1"] 
 TEAM_ROLE2 = config["team_role_id_2"]
@@ -252,6 +252,7 @@ class MyView(discord.ui.View):
             await asyncio.sleep(1)
             embed = discord.Embed(title=EMBED_TITLE, description=EMBED_DESCRIPTION, color=discord.colour.Color.blue())
             await interaction.message.edit(embed=embed, view=MyView(bot=self.bot)) #This will reset the SelectMenu in the Ticket Channel
+             
 
 #First Button for the Ticket 
 class CloseButton(discord.ui.View):

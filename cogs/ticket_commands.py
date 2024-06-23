@@ -14,7 +14,7 @@ from cogs.ticket_system import MyView
 with open("config.json", mode="r") as config_file:
     config = json.load(config_file)
 
-TICKET_CHANNEL = config["ticket_channel_id"]
+SUPPORT_CHANNEL = config["support_channel_id"]
 GUILD_ID = config["guild_id"]
 LOG_CHANNEL = config["log_channel_id"]
 TIMEZONE = config["timezone"]
@@ -43,7 +43,7 @@ class Ticket_Command(commands.Cog):
     @commands.slash_command(name="ticket")
     @has_permissions(administrator=True)
     async def ticket(self, ctx):
-        self.channel = self.bot.get_channel(TICKET_CHANNEL)
+        self.channel = self.bot.get_channel(SUPPORT_CHANNEL)
         embed = discord.Embed(title=EMBED_TITLE, description=EMBED_DESCRIPTION, color=discord.colour.Color.blue())
         await self.channel.send(embed=embed, view=MyView(self.bot))
         await ctx.respond("Ticket Menu was send!", ephemeral=True)
