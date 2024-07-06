@@ -89,8 +89,7 @@ class MainCog(commands.Cog):
     # Event: Bot is ready
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f'Logged in as {self.bot.user}')
-        print(f'Bot Loaded  | maincog.py ')
+        print(f'Bot Loaded  | countevent_system_commands.py ')
 
     # Event: Message is received
     @commands.Cog.listener()

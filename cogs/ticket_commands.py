@@ -8,17 +8,21 @@ import sqlite3
 from discord import *
 from discord.ext import commands
 from discord.ext.commands import has_permissions
-from cogs.ticket_system import MyView
+from cogs.ticket_system import SupportView, LoanView, ApplicationView
 
 #This will get everything from the config.json file
 with open("config.json", mode="r") as config_file:
     config = json.load(config_file)
 
 SUPPORT_CHANNEL = config["support_channel_id"]
+LOAN_CHANNEL = config["loan_channel_id"]
+APPLICATION_CHANNEL = config["application_channel_id"]
 GUILD_ID = config["guild_id"]
 LOG_CHANNEL = config["log_channel_id"]
 TIMEZONE = config["timezone"]
-EMBED_TITLE = config["embed_title"]
+SUPPORT_TITLE = config["support_title"]
+APPLICATION_TITLE = config["application_title"]
+LOAN_TITLE = config["loan_title"]
 EMBED_DESCRIPTION = config["embed_description"]
 
 #This will create and connect to the database
@@ -40,17 +44,33 @@ class Ticket_Command(commands.Cog):
         conn.close()
 
     #Slash Command to show the Ticket Menu in the Ticket Channel only needs to be used once
-    @commands.slash_command(name="ticket")
+    @commands.slash_command(name="supportsetup")
     @has_permissions(administrator=True)
-    async def ticket(self, ctx):
+    async def supportsetup(self, ctx):
         self.channel = self.bot.get_channel(SUPPORT_CHANNEL)
-        embed = discord.Embed(title=EMBED_TITLE, description=EMBED_DESCRIPTION, color=discord.colour.Color.blue())
-        await self.channel.send(embed=embed, view=MyView(self.bot))
+        embed = discord.Embed(title=SUPPORT_TITLE, description=EMBED_DESCRIPTION, color=discord.colour.Color.blue())
+        await self.channel.send(embed=embed, view=SupportView(self.bot))
+        await ctx.respond("Ticket Menu was send!", ephemeral=True)
+
+    @commands.slash_command(name="loansetup")
+    @has_permissions(administrator=True)
+    async def loansetup(self, ctx):
+        self.channel = self.bot.get_channel(LOAN_CHANNEL)
+        embed = discord.Embed(title=LOAN_TITLE, description=EMBED_DESCRIPTION, color=discord.colour.Color.blue())
+        await self.channel.send(embed=embed, view=LoanView(self.bot))
+        await ctx.respond("Ticket Menu was send!", ephemeral=True)
+
+    @commands.slash_command(name="applicationsetup")
+    @has_permissions(administrator=True)
+    async def applicationsetup(self, ctx):
+        self.channel = self.bot.get_channel(APPLICATION_CHANNEL)
+        embed = discord.Embed(title=APPLICATION_TITLE, description=EMBED_DESCRIPTION, color=discord.colour.Color.blue())
+        await self.channel.send(embed=embed, view=ApplicationView(self.bot))
         await ctx.respond("Ticket Menu was send!", ephemeral=True)
 
     #Slash Command to add Members to the Ticket
     @commands.slash_command(name="add", description="Add a Member to the Ticket")
-    async def add(self, ctx, member: Option(discord.Member, description="Which Member you want to add to the Ticket", required = True)):
+    async def add(self, ctx, member: Option(discord.Member, description="Which Member you want to add to the Ticket", required = True)): # type: ignore
         if "ticket-" in ctx.channel.name or "ticket-closed-" in ctx.channel.name:
             await ctx.channel.set_permissions(member, send_messages=True, read_messages=True, add_reactions=False,
                                                 embed_links=True, attach_files=True, read_message_history=True,
@@ -63,7 +83,7 @@ class Ticket_Command(commands.Cog):
 
     #Slash Command to remove Members from the Ticket
     @commands.slash_command(name="remove", description="Remove a Member from the Ticket")
-    async def remove(self, ctx, member: Option(discord.Member, description="Which Member you want to remove from the Ticket", required = True)):
+    async def remove(self, ctx, member: Option(discord.Member, description="Which Member you want to remove from the Ticket", required = True)): # type: ignore
         if "ticket-" in ctx.channel.name or "ticket-closed-" in ctx.channel.name:
             await ctx.channel.set_permissions(member, send_messages=False, read_messages=False, add_reactions=False,
                                                 embed_links=False, attach_files=False, read_message_history=False,

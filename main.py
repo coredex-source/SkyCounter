@@ -1,11 +1,9 @@
 import discord
 from discord.ext import commands, tasks
 from discord import Permissions
-import csv
-import os
-import asyncio
-from datetime import datetime, timedelta
+from colorama import Back, Fore, Style
 import json
+import sys
 from cogs.ticket_system import Ticket_System
 from cogs.ticket_commands import Ticket_Command
 from cogs.countevent_system_commands import MainCog
@@ -21,6 +19,20 @@ intents = discord.Intents.all()
 intents.messages = True
 intents.guilds = True
 bot = commands.Bot(command_prefix="!", intents=intents)
+
+@bot.event
+async def on_ready():
+      print("\n-------------------------------------")
+      print(Fore.WHITE + Style.BRIGHT + "Bot is ready!")
+      print(Fore.LIGHTWHITE_EX + Style.BRIGHT + "Logged in as: " +
+            Fore.LIGHTRED_EX + bot.user.name)
+      print(Fore.LIGHTWHITE_EX + Style.BRIGHT + "ID: " + Fore.LIGHTRED_EX +
+            str(bot.user.id))
+      print(Fore.LIGHTWHITE_EX + Style.BRIGHT + "Python Version: " +
+            Fore.LIGHTRED_EX + sys.version)
+      print(Fore.LIGHTWHITE_EX + Style.BRIGHT + "Discord.py(pycord) Version: " +
+            Fore.LIGHTRED_EX + discord.__version__)
+      print(Fore.RESET + "-------------------------------------\n")
 
 #Add ticket functions
 bot.add_cog(Ticket_System(bot))
